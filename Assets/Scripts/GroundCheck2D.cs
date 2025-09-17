@@ -2,14 +2,23 @@ using UnityEngine;
 
 public class GroundCheck2D : MonoBehaviour
 {
-    private bool isgrounded = false;
+
+    private bool isGrounded = false;
+    private Animator animator;
+
+    void Start()
+    {
+        animator = GetComponent<Animator>();
+    }
 
     private void OnCollisionEnter2D(Collision2D other)
     {
         if (other.gameObject.CompareTag("Ground"))
         {
-            isgrounded = true;
-            Debug.Log("Collision con suelo");
+            isGrounded = true;
+            //Debug.Log("Collision con suelo");
+            animator.SetBool("Grounded", true);
+            animator.SetBool("IsFalling", false);
         }
     }
 
@@ -17,10 +26,15 @@ public class GroundCheck2D : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Ground"))
         {
-            isgrounded = false;
+            isGrounded = false;
+            animator.SetBool("Grounded", false);
+            animator.SetBool("IsFalling", true);
         }
     }
 
-    public bool isGrounded()
-    { return isgrounded; }
+    public bool IsGrounded()
+    {
+        return isGrounded;
+    }
+    
 }

@@ -3,41 +3,58 @@ using UnityEngine;
 
 public class Player_movement : MonoBehaviour
 {
-    public float speed = 0f;
+    [Header("Movimiento")]
+    public float MoveSpeed = 7f;
+    public float JumpForce = 10f;
 
-    private Rigidbody body;
+    private Rigidbody2D rb;
+    private float moveInput;
 
     private Animator animator;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        body = GetComponent<Rigidbody>();
+        rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
-
+        
     }
 
     // Update is called once per frame
     void Update()
     {
+        moveInput = Input.GetAxis("Horizontal");
+        rb.linearVelocity = new Vector2(moveInput * MoveSpeed, rb.linearVelocityY);
+        animator.SetFloat("Speed", Mathf.Abs(rb.linearVelocityX));
 
-        if (Input.GetKey(KeyCode.J))
-        {
-            speed = 5f;
+
+        if (moveInput > 0) { transform.localScale = new Vector3(1, 1, 1); } 
+        if (moveInput < 0) { transform.localScale = new Vector3(-1, 1, 1);}
+
+        if (rb.linearVelocityY < 0) { animator.SetBool("IsFalling", true); }
+
+        if (Input.GetKeyDown(KeyCode.Space)) 
+        { 
+            rb.AddForce(new Vector2(0, JumpForce), ForceMode2D.Impulse);
+            animator.SetTrigger("Jump");
         }
-        else speed = 0f;
 
-        if (Input.GetKey(KeyCode.Space))
-        {
-            speed = 5f;
-        }
-        else speed = 0f;
 
-        if (Input.GetKeyDown(KeyCode.K)) 
+        if (Input.GetKeyDown(KeyCode.J)) 
         {
             animator.SetTrigger("Attack");
         } else { animator.SetBool("IsAttacking", false); }
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            animator.SetTrigger("Attack2");
+        }
+        else { animator.SetBool("IsAttacking", false); }
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            animator.SetTrigger("Attack3");
+        }
+        else { animator.SetBool("IsAttacking", false); }
 
-        animator.SetFloat("Speed", speed);
     }
+
 } 
